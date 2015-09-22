@@ -22,16 +22,23 @@ void ecrobot_device_terminate() {
 void user_1ms_isr_type2(void) {}
 
 TASK(MotorcontrolTask) {
+  display_clear(1);
+  display_goto_xy(0, 0);
+  display_string("Motors off");
+  display_update();
+
   while (TRUE) {
     WaitEvent(TouchOnEvent);
+    ClearEvent(TouchOnEvent);
     display_clear(1);
     display_goto_xy(0, 0);
     display_string("Motors on");
     display_update();
-    nxt_motor_set_speed(NXT_PORT_A, 25, 1);
-    nxt_motor_set_speed(NXT_PORT_B, 25, 1);
+    nxt_motor_set_speed(NXT_PORT_A, 50, 1);
+    nxt_motor_set_speed(NXT_PORT_B, 50, 1);
 
     WaitEvent(TouchOffEvent);
+    ClearEvent(TouchOffEvent);
     display_clear(1);
     display_goto_xy(0, 0);
     display_string("Motors off");
@@ -50,7 +57,9 @@ TASK(EventdispatcherTask) {
     if (status == 0 && ecrobot_get_touch_sensor(NXT_PORT_S3) == 1) {
       SetEvent(MotorcontrolTask, TouchOnEvent);
       status = 1;
-    } else if (status == 1 && ecrobot_get_touch_sensor(NXT_PORT_S3) == 0) {
+    }
+
+    if (status == 1 && ecrobot_get_touch_sensor(NXT_PORT_S3) == 0) {
       SetEvent(MotorcontrolTask, TouchOffEvent);
       status = 0;
     }
