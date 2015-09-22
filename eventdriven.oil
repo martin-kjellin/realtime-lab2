@@ -24,6 +24,12 @@ CPU ATMEL_AT91SAM7S256
   EVENT TouchOffEvent
   { MASK = AUTO; };
 
+  EVENT OnTableEvent
+  { MASK = AUTO; };
+
+  EVENT OffTableEvent
+  { MASK = AUTO; };
+
   TASK MotorcontrolTask
   {
     AUTOSTART = TRUE
@@ -37,6 +43,9 @@ CPU ATMEL_AT91SAM7S256
 
     EVENT = TouchOnEvent;
     EVENT = TouchOffEvent;
+
+    EVENT = OnTableEvent;
+    EVENT = OffTableEvent;
   };
 
   TASK EventdispatcherTask
