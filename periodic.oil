@@ -34,7 +34,7 @@ CPU ATMEL_AT91SAM7S256
     TICKSPERBASE = 1; /* One tick is equal to 1msec */
   };
 
-  ALARM cyclic_alarm
+  ALARM cyclic_alarm_motor
   {
     COUNTER = SysTimerCnt;
     ACTION = ACTIVATETASK
@@ -47,5 +47,52 @@ CPU ATMEL_AT91SAM7S256
         CYCLETIME = 50; // 10?
         APPMODE = appmode1;
     };
+  };
+
+  ALARM cyclic_alarm_Button
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = ButtonPressTask;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 10;
+        APPMODE = appmode1;
+    };
+  };
+
+  ALARM cyclic_alarm_Display
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = DisplayTask;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 100;
+        APPMODE = appmode1;
+    };
+  };
+  TASK ButtonPressTask
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 1; /* Smaller value means lower priority */
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512; /* Stack size */
+  };
+
+  TASK DisplayTask
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 1; /* Smaller value means lower priority */
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512; /* Stack size */
   };
 };
