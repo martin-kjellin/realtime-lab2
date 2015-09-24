@@ -80,9 +80,13 @@ TASK (DistanceTask){
     int dis = ecrobot_get_sonar_sensor(NXT_PORT_S2);
     if(dis >= 0)
     {
-      int speed = dis-20;
+      dis-=4;
+      int speed = (dis-20)*3;
       if(speed > 50) speed = 50;
+      else if(speed < 10 && speed > 0) speed=10;
+      else if(speed > -10 && speed < 0) speed*=10;
       else if(speed < -50 ) speed = -50;
+     
       change_driving_command(PRIO_DIST, speed, 100);
     }
     TerminateTask();
@@ -100,7 +104,7 @@ TASK (DisplayTask){
     display_string("\ndc.dura: ");
     display_int(dc.duration, 4);
     display_string("\ndis: ");
-    display_int(ecrobot_get_sonar_sensor(NXT_PORT_S2), 3);
+    display_int(ecrobot_get_sonar_sensor(NXT_PORT_S2)-4, 3);
     display_update();
     ReleaseResource(resource_dc);
 
