@@ -44,15 +44,6 @@ CPU ATMEL_AT91SAM7S256
     STACKSIZE = 512; /* Stack size */
   };
 
-  TASK DistanceTask
-  {
-    AUTOSTART = FALSE;
-    PRIORITY = 1; /* Smaller value means lower priority */
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    RESOURCE = resource_dc;
-    STACKSIZE = 512; /* Stack size */
-  };
 
   TASK DisplayTask
   {
@@ -64,7 +55,27 @@ CPU ATMEL_AT91SAM7S256
     STACKSIZE = 512; /* Stack size */
   };
 
-  TASK TurningTask
+  TASK TurnLeftTask
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 1; /* Smaller value means lower priority */
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    RESOURCE = resource_dc;
+    STACKSIZE = 512; /* Stack size */
+  };
+
+  TASK TurnRightTask
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 1; /* Smaller value means lower priority */
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    RESOURCE = resource_dc;
+    STACKSIZE = 512; /* Stack size */
+  };
+
+  TASK MoveStraightTask
   {
     AUTOSTART = FALSE;
     PRIORITY = 1; /* Smaller value means lower priority */
@@ -126,12 +137,12 @@ CPU ATMEL_AT91SAM7S256
     };
   };
 
-  ALARM cyclic_alarm_Distance
+  ALARM cyclic_alarm_TurnLeft
   {
     COUNTER = SysTimerCnt;
     ACTION = ACTIVATETASK
     {
-        TASK = DistanceTask;
+        TASK = TurnLeftTask;
     };
     AUTOSTART = TRUE
     {
@@ -140,5 +151,35 @@ CPU ATMEL_AT91SAM7S256
         APPMODE = appmode1;
     };
   };
+
+  ALARM cyclic_alarm_TurnRight
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = TurnRightTask;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 100;
+        APPMODE = appmode1;
+    };
+  };
+  ALARM cyclic_alarm_movestraight
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = MoveStraightTask;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 100;
+        APPMODE = appmode1;
+    };
+  };
+
 
 };
