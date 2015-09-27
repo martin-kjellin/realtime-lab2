@@ -1,5 +1,5 @@
 # Name of target
-TARGET = helloworld
+TARGET = race
 
 # Path for wine executable
 WINEPATH = /it/kurs/realtid/bin
