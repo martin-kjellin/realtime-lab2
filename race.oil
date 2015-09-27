@@ -24,10 +24,7 @@ CPU ATMEL_AT91SAM7S256
     RESOURCEPROPERTY = STANDARD;
   };
 
- // EVENT TurnLeftEvent{MASK = AUTO;};
- // EVENT TurnRightEvent{MASK = AUTO;}; 
-
-TASK MotorcontrolTask
+  TASK MotorcontrolTask
   {
     AUTOSTART = FALSE;
     PRIORITY = 2; /* Smaller value means lower priority */
@@ -40,12 +37,13 @@ TASK MotorcontrolTask
   TASK ButtonPressTask
   {
     AUTOSTART = FALSE;
-    PRIORITY = 1; /* Smaller value means lower priority */
+    PRIORITY = 3; /* Smaller value means lower priority */
     ACTIVATION = 1;
     SCHEDULE = FULL;
     RESOURCE = resource_dc;
     STACKSIZE = 512; /* Stack size */
   };
+
 
   TASK DisplayTask
   {
@@ -57,7 +55,18 @@ TASK MotorcontrolTask
     STACKSIZE = 512; /* Stack size */
   };
 
-  TASK FollowTrackTask
+  TASK TurnLeftTask
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 1; /* Smaller value means lower priority */
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    RESOURCE = resource_dc;
+    STACKSIZE = 512; /* Stack size */
+  };
+
+
+  TASK MoveStraightTask
   {
     AUTOSTART = FALSE;
     PRIORITY = 1; /* Smaller value means lower priority */
@@ -119,13 +128,27 @@ TASK MotorcontrolTask
     };
   };
 
-
-  ALARM cyclic_alarm_follow_track
+  ALARM cyclic_alarm_TurnLeft
   {
     COUNTER = SysTimerCnt;
     ACTION = ACTIVATETASK
     {
-        TASK = FollowTrackTask;
+        TASK = TurnLeftTask;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 250;
+        APPMODE = appmode1;
+    };
+  };
+
+  ALARM cyclic_alarm_movestraight
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = MoveStraightTask;
     };
     AUTOSTART = TRUE
     {
@@ -134,4 +157,6 @@ TASK MotorcontrolTask
         APPMODE = appmode1;
     };
   };
+
+
 };

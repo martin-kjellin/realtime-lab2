@@ -8,7 +8,13 @@
 #define PRIO_BUTTON 20
 #define PRIO_TRUN 18
 
-int colorlimit = 685; 
+int colorlimit = 690;
+int error = 30;
+int speedadjust = 10;
+
+int duration = 100;
+int right_speed = 20;
+int left_speed = -20;
 
 DeclareCounter(SysTimerCnt);
 
@@ -16,10 +22,8 @@ DeclareTask(MotorcontrolTask);
 DeclareTask(ButtonPressTask);
 DeclareTask(DisplayTask);
 DeclareTask(DistanceTask);
-/*DeclareTask(TurnLeftTask);
-DeclareTask(TurnRightTask);
-DeclareTask(MoveStraightTask);*/
-DeclareTask(FollowTrackTask);
+DeclareTask(TurnLeftTask);
+DeclareTask(MoveStraightTask);
 
 DeclareResource(resource_dc);
 
@@ -39,6 +43,7 @@ void ecrobot_device_terminate() {
   ecrobot_set_light_sensor_inactive(NXT_PORT_S1);
   ecrobot_term_sonar_sensor(NXT_PORT_S2);
 }
+
 
 void user_1ms_isr_type2(void){
   (void) SignalCounter(SysTimerCnt);
@@ -80,62 +85,43 @@ TASK (MotorcontrolTask){
 TASK (ButtonPressTask){
   if(ecrobot_get_touch_sensor(NXT_PORT_S3) == 1)
     {
-      change_driving_command(PRIO_BUTTON, -50, -50, 1000);
+      colorlimit = ecrobot_get_light_sensor(NXT_PORT_S1);
     }
   TerminateTask();
 }
 
-/*TASK (MoveStraightTask){
-  //int color = ecrobot_get_light_sensor(NXT_PORT_S1);
-  int duration=100;
-  if(ecrobot_get_light_sensor(NXT_PORT_S1) >  colorlimit){ //in the right track
-    change_driving_command(PRIO_DIST,20, 20,duration);
-  }
-
+TASK (MoveStraightTask){
+  int color = ecrobot_get_light_sensor(NXT_PORT_S1);
+  if(color <  colorlimit+error && color > colorlimit-error){ //right track
+    
+    change_driving_command(PRIO_DIST,50, 50,duration);
+   
+    right_speed = 20;
+    left_speed = -20;
+  
+ }
  TerminateTask();
-}*/
 
-/*TASK (TurnLeftTask){
-  //int color = ecrobot_get_light_sensor(NXT_PORT_S1);
-  int duration=100;
-
-  if(ecrobot_get_light_sensor(NXT_PORT_S1) <  colorlimit){ // in the wrong track change the direction   
-    change_driving_command(PRIO_DIST, 0, 15,duration);
-  }
- TerminateTask();   
-}*/
-
-/*TASK (TurnRightTask){
-  //int color = ecrobot_get_light_sensor(NXT_PORT_S1);
-  int duration=100;
-
-  if(ecrobot_get_light_sensor(NXT_PORT_S1) <  colorlimit){ // didn't find the right track and turn right
-    change_driving_command(PRIO_DIST, 15, 0,duration);
-  }
-
- TerminateTask();
-}*/
-
-TASK (FollowTrackTask) {
-  int right_speed = 0;
-  int left_speed = 30;
-  int duration = 1000;
-  while (ecrobot_get_light_sensor(NXT_PORT_S1) < colorlimit) {
-    change_driving_command(PRIO_DIST, left_speed, right_speed, duration);
-    duration +=1000;
-    int temp_speed = right_speed*1.02;
-    right_speed = left_speed*1.02;
-    left_speed = temp_speed;
-    //systick_wait_ms(30); 
-    nxt_motor_set_speed(NXT_PORT_A, dc.speedright, 1);
-    nxt_motor_set_speed(NXT_PORT_B, dc.speedleft, 1);
-  }
-
-  change_driving_command(PRIO_DIST, 30, 30, 1000);
-
-  TerminateTask();
 }
 
+TASK (TurnLeftTask){
+  int color = ecrobot_get_light_sensor(NXT_PORT_S1);
+  if(color >  colorlimit+error || color < colorlimit-error){
+   
+    change_driving_command(PRIO_DIST,left_speed, right_speed,100);
+    
+    if(left_speed > 0){ left_speed += speedadjust; right_speed -= speedadjust;}
+    else { left_speed -= speedadjust; right_speed += speedadjust;}
+    
+    int temp_speed = right_speed;
+    right_speed = left_speed;
+    left_speed = temp_speed;
+    
+  }
+  //systick_wait_ms(50);
+  TerminateTask();
+     
+}
 /*TASK (DistanceTask){
   int dis = ecrobot_get_sonar_sensor(NXT_PORT_S2);
   if(dis >= 0)
@@ -169,6 +155,8 @@ TASK (DisplayTask){
   display_int(dc.duration, 4);
   display_string("\ndis: ");
   display_int(ecrobot_get_sonar_sensor(NXT_PORT_S2)-4, 3);
+  display_string("\nlimit: ");
+  display_int(colorlimit, 4);
   display_update();
   ReleaseResource(resource_dc);
 
