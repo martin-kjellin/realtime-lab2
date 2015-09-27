@@ -84,7 +84,7 @@ TASK (DistanceTask){
       int speed = (dis-20)*3;
       if(speed > 50) speed = 50;
       else if(speed < 10 && speed > 0) speed=10;
-      else if(speed > -10 && speed < 0) speed*=10;
+      else if(speed > -10 && speed < 0) speed=-10;
       else if(speed < -50 ) speed = -50;
      
       change_driving_command(PRIO_DIST, speed, 100);
