@@ -88,7 +88,7 @@ TASK (ButtonPressTask){
 TASK (MoveStraightTask){
   //int color = ecrobot_get_light_sensor(NXT_PORT_S1);
   int duration=100;
-  if(ecrobot_get_light_sensor(NXT_PORT_S1) <  colorlimit){ //in the right track
+  if(ecrobot_get_light_sensor(NXT_PORT_S1) >  colorlimit){ //in the right track
     change_driving_command(PRIO_DIST,20, 20,duration);
   }
 
@@ -100,7 +100,7 @@ TASK (TurnLeftTask){
   //int color = ecrobot_get_light_sensor(NXT_PORT_S1);
   int duration=100;
 
-  if(ecrobot_get_light_sensor(NXT_PORT_S1) >  colorlimit){ // in the wrong track change the direction   
+  if(ecrobot_get_light_sensor(NXT_PORT_S1) <  colorlimit){ // in the wrong track change the direction   
     change_driving_command(PRIO_DIST, 0, 15,duration);
   }
  TerminateTask();
@@ -111,7 +111,7 @@ TASK (TurnRightTask){
   //int color = ecrobot_get_light_sensor(NXT_PORT_S1);
   int duration=100;
 
-  if(ecrobot_get_light_sensor(NXT_PORT_S1) >  colorlimit){ // didn't find the right track and turn right
+  if(ecrobot_get_light_sensor(NXT_PORT_S1) <  colorlimit){ // didn't find the right track and turn right
     change_driving_command(PRIO_DIST, 15, 0,duration);
   }
 
