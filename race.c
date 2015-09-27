@@ -8,7 +8,7 @@
 #define PRIO_BUTTON 20
 #define PRIO_TRUN 18
 
-int colorlimit = 520;
+int colorlimit = 700; 
 
 DeclareCounter(SysTimerCnt);
 
@@ -16,12 +16,12 @@ DeclareTask(MotorcontrolTask);
 DeclareTask(ButtonPressTask);
 DeclareTask(DisplayTask);
 DeclareTask(DistanceTask);
-DeclareTask(TurnLeftTask);
-DeclareTask(TurnRightTask);
+//DeclareTask(TurnLeftTask);
+//DeclareTask(TurnRightTask);
 DeclareTask(MoveStraightTask);
 
-DeclareEvent(TrunLeftEvent);
-DeclareEvent(TrunRightEvent);
+DeclareEvent(TurnLeftEvent);
+DeclareEvent(TurnRightEvent);
 
 DeclareResource(resource_dc);
 
@@ -97,7 +97,7 @@ TASK (MoveStraightTask){
     
     WaitEvent(TurnRightEvent);
     ClearEvent(TurnRightEvent);
-  }
+    }
   if(ecrobot_get_light_sensor(NXT_PORT_S1) <  colorlimit){ //in the right track
     change_driving_command(PRIO_DIST,20, 20,duration);
   }
