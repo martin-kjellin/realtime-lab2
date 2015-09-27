@@ -61,37 +61,43 @@ TASK(MotorcontrolTask) {
 }
 
 TASK(EventdispatcherTask) {
-  int status = 0;
+  int on_touch = 0;
   int on_table = 0;
 
   while (TRUE) {
     display_clear(1);
     display_goto_xy(0, 0);
-    display_string("status: ");
-    display_int(status, 1);
+    display_string("on_touch: ");
+    display_int(on_touch, 1);
     display_string("\non_table: ");
     display_int(on_table, 1);
     display_update();
 
-    if (status == 0 && ecrobot_get_touch_sensor(NXT_PORT_S3) == 1) {
+    if (ecrobot_get_touch_sensor(NXT_PORT_S3) == 1 && ecrobot_get_light_sensor(NXT_PORT_S1) < 700) {
       SetEvent(MotorcontrolTask, TouchOnEvent);
-      status = 1;
-    }
-
-    if (status == 1 && ecrobot_get_touch_sensor(NXT_PORT_S3) == 0) {
-      SetEvent(MotorcontrolTask, TouchOffEvent);
-      status = 0;
-      on_table = 0;
-    }
-
-    if (on_table == 0 && ecrobot_get_light_sensor(NXT_PORT_S1) < 700) {
       SetEvent(MotorcontrolTask, OnTableEvent);
+      on_touch = 1;
       on_table = 1;
     }
 
-    if (on_table == 1 && ecrobot_get_light_sensor(NXT_PORT_S1) >= 700) {
+    if (ecrobot_get_touch_sensor(NXT_PORT_S3) == 0 &&  ecrobot_get_light_sensor(NXT_PORT_S1) < 700 ) {
+      SetEvent(MotorcontrolTask, TouchOffEvent);
+      SetEvent(MotorcontrolTask, OnTableEvent);
+      on_touch = 0;
+      on_table = 1;
+    }
+
+    if ( ecrobot_get_touch_sensor(NXT_PORT_S3) == 1 &&ecrobot_get_light_sensor(NXT_PORT_S1) >= 700) {
+      SetEvent(MotorcontrolTask, TouchOnEvent);
       SetEvent(MotorcontrolTask, OffTableEvent);
-      status = 0;
+      on_touch = 1;
+      on_table = 0;
+    }
+
+    if (ecrobot_get_touch_sensor(NXT_PORT_S3) == 0 && ecrobot_get_light_sensor(NXT_PORT_S1) >= 700) {
+      SetEvent(MotorcontrolTask, TouchOffEvent);
+      SetEvent(MotorcontrolTask, OffTableEvent);
+      on_touch = 0;
       on_table = 0;
     }
 
