@@ -16,9 +16,10 @@ DeclareTask(MotorcontrolTask);
 DeclareTask(ButtonPressTask);
 DeclareTask(DisplayTask);
 DeclareTask(DistanceTask);
-DeclareTask(TurnLeftTask);
+/*DeclareTask(TurnLeftTask);
 DeclareTask(TurnRightTask);
-DeclareTask(MoveStraightTask);
+DeclareTask(MoveStraightTask);*/
+DeclareTask(FollowTrackTask);
 
 DeclareResource(resource_dc);
 
@@ -27,7 +28,7 @@ struct dc_t {
   S32 speedleft;
   S32 speedright;
   int priority;
-} dc = {0, 0, PRIO_IDLE};
+} dc = {0, 0, 0, PRIO_IDLE};
 
 void ecrobot_device_initialize() {
   ecrobot_set_light_sensor_active(NXT_PORT_S1);
@@ -38,7 +39,6 @@ void ecrobot_device_terminate() {
   ecrobot_set_light_sensor_inactive(NXT_PORT_S1);
   ecrobot_term_sonar_sensor(NXT_PORT_S2);
 }
-
 
 void user_1ms_isr_type2(void){
   (void) SignalCounter(SysTimerCnt);
@@ -85,7 +85,7 @@ TASK (ButtonPressTask){
   TerminateTask();
 }
 
-TASK (MoveStraightTask){
+/*TASK (MoveStraightTask){
   //int color = ecrobot_get_light_sensor(NXT_PORT_S1);
   int duration=100;
   if(ecrobot_get_light_sensor(NXT_PORT_S1) <  colorlimit){ //in the right track
@@ -93,21 +93,19 @@ TASK (MoveStraightTask){
   }
 
  TerminateTask();
+}*/
 
-}
-
-TASK (TurnLeftTask){
+/*TASK (TurnLeftTask){
   //int color = ecrobot_get_light_sensor(NXT_PORT_S1);
   int duration=100;
 
   if(ecrobot_get_light_sensor(NXT_PORT_S1) >  colorlimit){ // in the wrong track change the direction   
     change_driving_command(PRIO_DIST, 0, 15,duration);
   }
- TerminateTask();
+ TerminateTask();   
+}*/
 
-     
-}
-TASK (TurnRightTask){
+/*TASK (TurnRightTask){
   //int color = ecrobot_get_light_sensor(NXT_PORT_S1);
   int duration=100;
 
@@ -116,9 +114,24 @@ TASK (TurnRightTask){
   }
 
  TerminateTask();
+}*/
 
-     
- }
+TASK (FollowTrackTask) {
+  int right_speed = 0;
+  int left_speed = 15;
+
+  while (ecrobot_get_light_sensor(NXT_PORT_S1) < colorlimit) {
+    change_driving_command(PRIO_DIST, left_speed, right_speed, 50);
+    int temp_speed = right_speed;
+    right_speed = left_speed * 2;
+    left_speed = temp_speed * 2;
+  }
+
+  change_driving_command(PRIO_DIST, 20, 20, 100);
+
+  TerminateTask();
+}
+
 /*TASK (DistanceTask){
   int dis = ecrobot_get_sonar_sensor(NXT_PORT_S2);
   if(dis >= 0)
