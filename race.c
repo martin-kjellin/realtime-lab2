@@ -10,7 +10,7 @@
 
 int colorlimit = 690;
 int error = 30;
-int speedadjust = 10;
+int speedadjust = 8;
 
 int duration = 100;
 int right_speed = 20;
@@ -24,7 +24,7 @@ DeclareTask(DisplayTask);
 DeclareTask(DistanceTask);
 DeclareTask(TurnLeftTask);
 DeclareTask(MoveStraightTask);
-
+DeclareTask(DistanceTask);
 DeclareResource(resource_dc);
 
 struct dc_t {
@@ -70,7 +70,7 @@ TASK (MotorcontrolTask){
       nxt_motor_set_speed(NXT_PORT_A, dc.speedright, 1);
       nxt_motor_set_speed(NXT_PORT_B, dc.speedleft, 1);
       dc.duration-=50;
-      //change_driving_command();
+     
     }
   else
     {
@@ -110,33 +110,31 @@ TASK (TurnLeftTask){
    
     change_driving_command(PRIO_DIST,left_speed, right_speed,100);
     
-    if(left_speed > 0){ left_speed += speedadjust; right_speed -= speedadjust;}
-    else { left_speed -= speedadjust; right_speed += speedadjust;}
+    if(left_speed > 0)
+      { left_speed += speedadjust; right_speed -= speedadjust;}
+    else
+      { left_speed -= speedadjust; right_speed += speedadjust;}
     
     int temp_speed = right_speed;
     right_speed = left_speed;
     left_speed = temp_speed;
     
   }
-  //systick_wait_ms(50);
   TerminateTask();
      
 }
-/*TASK (DistanceTask){
+TASK (DistanceTask){
   int dis = ecrobot_get_sonar_sensor(NXT_PORT_S2);
   if(dis >= 0)
     {
       dis-=4;
-      int speed = (dis-20)*3;
-      if(speed > 50) speed = 50;
-      else if(speed < 10 && speed > 0) speed=10;
-      else if(speed > -10 && speed < 0) speed-=10;
-      else if(speed < -50 ) speed = -50;
-      
-      change_driving_command(PRIO_DIST, speed, speed, 100);
+      if(dis <=40){
+	change_driving_command(PRIO_DIST, 0, 0, 100);
+      }
+
     }
   TerminateTask();
-  }*/
+  }
 
 TASK (DisplayTask){
 
