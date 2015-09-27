@@ -8,7 +8,7 @@
 #define PRIO_BUTTON 20
 #define PRIO_TRUN 18
 
-int colorlimit = 700; 
+int colorlimit = 685; 
 
 DeclareCounter(SysTimerCnt);
 
@@ -118,17 +118,20 @@ TASK (ButtonPressTask){
 
 TASK (FollowTrackTask) {
   int right_speed = 0;
-  int left_speed = 15;
-
+  int left_speed = 30;
+  int duration = 1000;
   while (ecrobot_get_light_sensor(NXT_PORT_S1) < colorlimit) {
-    change_driving_command(PRIO_DIST, left_speed, right_speed, 50);
-    int temp_speed = right_speed;
-    right_speed = left_speed * 2;
-    left_speed = temp_speed * 2;
-    systick_wait_ms(30);
+    change_driving_command(PRIO_DIST, left_speed, right_speed, duration);
+    duration +=1000;
+    int temp_speed = right_speed*1.02;
+    right_speed = left_speed*1.02;
+    left_speed = temp_speed;
+    //systick_wait_ms(30); 
+    nxt_motor_set_speed(NXT_PORT_A, dc.speedright, 1);
+    nxt_motor_set_speed(NXT_PORT_B, dc.speedleft, 1);
   }
 
-  change_driving_command(PRIO_DIST, 20, 20, 100);
+  change_driving_command(PRIO_DIST, 30, 30, 1000);
 
   TerminateTask();
 }
