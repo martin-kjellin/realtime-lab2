@@ -47,7 +47,6 @@ TASK MotorcontrolTask
     STACKSIZE = 512; /* Stack size */
   };
 
-
   TASK DisplayTask
   {
     AUTOSTART = FALSE;
@@ -58,27 +57,7 @@ TASK MotorcontrolTask
     STACKSIZE = 512; /* Stack size */
   };
 
-  TASK MoveStraightTask
-  {
-    AUTOSTART = FALSE;
-    PRIORITY = 1; /* Smaller value means lower priority */
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    RESOURCE = resource_dc;
-    STACKSIZE = 512; /* Stack size */
-  };
-
- TASK TurnLeftTask
-  {
-    AUTOSTART = FALSE;
-    PRIORITY = 1; /* Smaller value means lower priority */
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    RESOURCE = resource_dc;
-    STACKSIZE = 512; /* Stack size */
-  };
-
- TASK TurnRightTask
+  TASK FollowTrackTask
   {
     AUTOSTART = FALSE;
     PRIORITY = 1; /* Smaller value means lower priority */
@@ -141,12 +120,12 @@ TASK MotorcontrolTask
   };
 
 
-  ALARM cyclic_alarm_movestraight
+  ALARM cyclic_alarm_follow_track
   {
     COUNTER = SysTimerCnt;
     ACTION = ACTIVATETASK
     {
-        TASK = MoveStraightTask;
+        TASK = FollowTrackTask;
     };
     AUTOSTART = TRUE
     {
@@ -155,35 +134,4 @@ TASK MotorcontrolTask
         APPMODE = appmode1;
     };
   };
-
- ALARM cyclic_alarm_turnleft
-  {
-    COUNTER = SysTimerCnt;
-    ACTION = ACTIVATETASK
-    {
-        TASK = TurnLeftTask;
-    };
-    AUTOSTART = TRUE
-    {
-        ALARMTIME = 1;
-        CYCLETIME = 100;
-        APPMODE = appmode1;
-    };
-  };
-
- ALARM cyclic_alarm_turnright
-  {
-    COUNTER = SysTimerCnt;
-    ACTION = ACTIVATETASK
-    {
-        TASK = TurnRightTask;
-    };
-    AUTOSTART = TRUE
-    {
-        ALARMTIME = 1;
-        CYCLETIME = 100;
-        APPMODE = appmode1;
-    };
-  };
-
 };
