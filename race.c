@@ -16,12 +16,9 @@ DeclareTask(MotorcontrolTask);
 DeclareTask(ButtonPressTask);
 DeclareTask(DisplayTask);
 DeclareTask(DistanceTask);
-//DeclareTask(TurnLeftTask);
-//DeclareTask(TurnRightTask);
+DeclareTask(TurnLeftTask);
+DeclareTask(TurnRightTask);
 DeclareTask(MoveStraightTask);
-
-DeclareEvent(TurnLeftEvent);
-DeclareEvent(TurnRightEvent);
 
 DeclareResource(resource_dc);
 
@@ -91,13 +88,6 @@ TASK (ButtonPressTask){
 TASK (MoveStraightTask){
   //int color = ecrobot_get_light_sensor(NXT_PORT_S1);
   int duration=100;
-  while(TRUE){
-    WaitEvent(TurnLeftEvent);
-    ClearEvent(TurnLeftEvent);
-    
-    WaitEvent(TurnRightEvent);
-    ClearEvent(TurnRightEvent);
-    }
   if(ecrobot_get_light_sensor(NXT_PORT_S1) <  colorlimit){ //in the right track
     change_driving_command(PRIO_DIST,20, 20,duration);
   }
@@ -106,7 +96,7 @@ TASK (MoveStraightTask){
 
 }
 
-/*TASK (TurnLeftTask){
+TASK (TurnLeftTask){
   //int color = ecrobot_get_light_sensor(NXT_PORT_S1);
   int duration=100;
 
@@ -128,7 +118,7 @@ TASK (TurnRightTask){
  TerminateTask();
 
      
- }*/
+ }
 /*TASK (DistanceTask){
   int dis = ecrobot_get_sonar_sensor(NXT_PORT_S2);
   if(dis >= 0)
