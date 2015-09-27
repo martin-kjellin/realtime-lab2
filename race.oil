@@ -30,7 +30,7 @@ CPU ATMEL_AT91SAM7S256
 TASK MotorcontrolTask
   {
     AUTOSTART = FALSE;
-    PRIORITY = 1; /* Smaller value means lower priority */
+    PRIORITY = 2; /* Smaller value means lower priority */
     ACTIVATION = 1;
     SCHEDULE = FULL;
     RESOURCE = resource_dc;

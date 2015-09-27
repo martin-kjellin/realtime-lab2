@@ -125,6 +125,7 @@ TASK (FollowTrackTask) {
     int temp_speed = right_speed;
     right_speed = left_speed * 2;
     left_speed = temp_speed * 2;
+    systick_wait_ms(30);
   }
 
   change_driving_command(PRIO_DIST, 20, 20, 100);
