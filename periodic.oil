@@ -34,7 +34,27 @@ CPU ATMEL_AT91SAM7S256
     STACKSIZE = 512; /* Stack size */
   };
 
-  TASK ButtonPressTask
+  TASK ButtonpressTask
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 1; /* Smaller value means lower priority */
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    RESOURCE = resource_dc;
+    STACKSIZE = 512; /* Stack size */
+  };
+
+  TASK DisplayTask
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 1; /* Smaller value means lower priority */
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    RESOURCE = resource_dc;
+    STACKSIZE = 512; /* Stack size */
+  };
+
+  TASK DistanceTask
   {
     AUTOSTART = FALSE;
     PRIORITY = 1; /* Smaller value means lower priority */
@@ -61,17 +81,17 @@ CPU ATMEL_AT91SAM7S256
     AUTOSTART = TRUE
     {
         ALARMTIME = 1;
-        CYCLETIME = 50; // 10?
+        CYCLETIME = 50;
         APPMODE = appmode1;
     };
   };
 
-  ALARM cyclic_alarm_Button
+  ALARM cyclic_alarm_button
   {
     COUNTER = SysTimerCnt;
     ACTION = ACTIVATETASK
     {
-        TASK = ButtonPressTask;
+        TASK = ButtonpressTask;
     };
     AUTOSTART = TRUE
     {
@@ -81,7 +101,7 @@ CPU ATMEL_AT91SAM7S256
     };
   };
 
-  ALARM cyclic_alarm_Display
+  ALARM cyclic_alarm_display
   {
     COUNTER = SysTimerCnt;
     ACTION = ACTIVATETASK
@@ -96,7 +116,7 @@ CPU ATMEL_AT91SAM7S256
     };
   };
 
-  ALARM cyclic_alarm_Distance
+  ALARM cyclic_alarm_distance
   {
     COUNTER = SysTimerCnt;
     ACTION = ACTIVATETASK
@@ -110,27 +130,4 @@ CPU ATMEL_AT91SAM7S256
         APPMODE = appmode1;
     };
   };
-
-
-  TASK DistanceTask
-  {
-    AUTOSTART = FALSE;
-    PRIORITY = 1; /* Smaller value means lower priority */
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    RESOURCE = resource_dc;
-    STACKSIZE = 512; /* Stack size */
-  };
-
-  TASK DisplayTask
-  {
-    AUTOSTART = FALSE;
-    PRIORITY = 1; /* Smaller value means lower priority */
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    RESOURCE = resource_dc;
-    STACKSIZE = 512; /* Stack size */
-  };
-
-
 };
