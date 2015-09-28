@@ -1,0 +1,41 @@
+\documentclass[a4paper,11pt]{article}
+%\usepackage{fullpage}
+%\usepackage{amsmath}
+%\usepackage{enumerate}
+
+%\input{macros}
+
+%\newcommand{\Queen}{\textit{Queen}}
+%\newcommand{\Hex}{\textit{Hex}}
+%\newcommand{\Timeout}{60.000} % CPU seconds
+
+\title{\textbf{Real Time Systems\\
+    Uppsala University -- Autumn 2015\\
+    Report for Lab 2 by Team 4
+  }
+}
+
+\author{Martin Kjellin \and Pei-Chun Chen \and Jai-Ying Lin}
+
+%\date{Month Day, Year}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Part 2: Event-Driven Scheduling}
+
+In this part of the lab, we were asked to write a program using event-driven scheduling. The program should make a Lego car drive forward as long as a touch sensor is pressed and a light sensor indicates that there is a table underneath the car.
+
+We have defined four different events. TouchOnEvent and TouchOff-Event indicate that the touch sensor is pressed or released, respectively. OnTableEvent and OffTableEvent indicate that the reading of the light sensor goes below or above 700, respectively. This threshold was experimentally determined to be a good indicator of the light sensor being above the table or not. The light sensor is mounted in the front of the car, and the car will therefore stop before going over the edge of the table.
+
+% ######## NOTE: DESCRIPTION IS ACCORDING TO ``NEW'' VERSION ########
+According to the instructions, our program includes two tasks. The EventdispatcherTask generates the appropriate events when the touch sensor is pressed or released or the light sensor reading goes below or above the threshold. The MotorcontrolTask repeatedly first waits for a TouchOnEvent and an OnTableEvent before starting the motors and then waits for a TouchOffEvent or an OffTableEvent before stopping the motors.
+
+The code can be found in the files \texttt{eventdriven.c} and \texttt{eventdriven.oil}.
+
+
+
+
+\end{document}
