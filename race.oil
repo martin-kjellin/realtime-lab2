@@ -55,17 +55,6 @@ CPU ATMEL_AT91SAM7S256
     STACKSIZE = 512; /* Stack size */
   };
 
-  TASK TurnLeftTask
-  {
-    AUTOSTART = FALSE;
-    PRIORITY = 1; /* Smaller value means lower priority */
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    RESOURCE = resource_dc;
-    STACKSIZE = 512; /* Stack size */
-  };
-
-
   TASK MoveStraightTask
   {
     AUTOSTART = FALSE;
@@ -134,21 +123,6 @@ CPU ATMEL_AT91SAM7S256
     {
         ALARMTIME = 1;
         CYCLETIME = 100;
-        APPMODE = appmode1;
-    };
-  };
-
-  ALARM cyclic_alarm_TurnLeft
-  {
-    COUNTER = SysTimerCnt;
-    ACTION = ACTIVATETASK
-    {
-        TASK = TurnLeftTask;
-    };
-    AUTOSTART = TRUE
-    {
-        ALARMTIME = 1;
-        CYCLETIME = 250;
         APPMODE = appmode1;
     };
   };

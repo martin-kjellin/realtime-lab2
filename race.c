@@ -8,13 +8,17 @@
 #define PRIO_BUTTON 20
 #define PRIO_TRUN 18
 
-int colorlimit = 690;
-int error = 30;
-int speedadjust = 8;
+int colormax = 690;
+int colormin = 0;
+int offset=0;
+
+int speedmax = 50;
+int speedmin = 10;
 
 int duration = 100;
 int right_speed = 20;
 int left_speed = -20;
+int counter = 0;
 
 DeclareCounter(SysTimerCnt);
 
@@ -22,7 +26,6 @@ DeclareTask(MotorcontrolTask);
 DeclareTask(ButtonPressTask);
 DeclareTask(DisplayTask);
 DeclareTask(DistanceTask);
-DeclareTask(TurnLeftTask);
 DeclareTask(MoveStraightTask);
 DeclareTask(DistanceTask);
 DeclareResource(resource_dc);
@@ -85,44 +88,38 @@ TASK (MotorcontrolTask){
 TASK (ButtonPressTask){
   if(ecrobot_get_touch_sensor(NXT_PORT_S3) == 1)
     {
-      colorlimit = ecrobot_get_light_sensor(NXT_PORT_S1);
+      if(counter == 0){
+	colormax = ecrobot_get_light_sensor(NXT_PORT_S1);
+	counter=1;
+      }
+
+      else {
+	colormin = ecrobot_get_light_sensor(NXT_PORT_S1);
+	counter=0;
+	offset = (colormax+colormin)/2;
+      }
+     
     }
+
   TerminateTask();
 }
 
 TASK (MoveStraightTask){
-  int color = ecrobot_get_light_sensor(NXT_PORT_S1);
-  if(color <  colorlimit+error && color > colorlimit-error){ //right track
-    
-    change_driving_command(PRIO_DIST,50, 50,duration);
-   
-    right_speed = 20;
-    left_speed = -20;
   
- }
- TerminateTask();
-
-}
-
-TASK (TurnLeftTask){
+  int kp=10;
   int color = ecrobot_get_light_sensor(NXT_PORT_S1);
-  if(color >  colorlimit+error || color < colorlimit-error){
-   
-    change_driving_command(PRIO_DIST,left_speed, right_speed,100);
-    
-    if(left_speed > 0)
-      { left_speed += speedadjust; right_speed -= speedadjust;}
-    else
-      { left_speed -= speedadjust; right_speed += speedadjust;}
-    
-    int temp_speed = right_speed;
-    right_speed = left_speed;
-    left_speed = temp_speed;
-    
-  }
+  right_speed = kp*(color-offset)+30;
+  left_speed = -right_speed;
+  if(right_speed > speedmax) right_speed = speedmax;
+  if(right_speed < speedmin) right_speed = speedmin;
+  if(left_speed > speedmax) left_speed = speedmax;
+  if(left_speed < speedmin) left_speed = speedmin;
+
+  change_driving_command(PRIO_DIST, left_speed, right_speed, duration);
   TerminateTask();
-     
+
 }
+
 TASK (DistanceTask){
   int dis = ecrobot_get_sonar_sensor(NXT_PORT_S2);
   if(dis >= 0)
@@ -153,8 +150,10 @@ TASK (DisplayTask){
   display_int(dc.duration, 4);
   display_string("\ndis: ");
   display_int(ecrobot_get_sonar_sensor(NXT_PORT_S2)-4, 3);
-  display_string("\nlimit: ");
-  display_int(colorlimit, 4);
+  display_string("\ncmax: ");
+  display_int(colormax, 4);
+  display_string("\ncmin: ");
+  display_int(colormin, 4);
   display_update();
   ReleaseResource(resource_dc);
 
