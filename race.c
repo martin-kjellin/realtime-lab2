@@ -10,7 +10,7 @@
 
 int colormax = 690;
 int colormin = 0;
-int offset=0;
+int colormiddle=0;
 
 int speedmax = 50;
 int speedmin = 10;
@@ -96,7 +96,7 @@ TASK (ButtonPressTask){
       else {
 	colormin = ecrobot_get_light_sensor(NXT_PORT_S1);
 	counter=0;
-	offset = (colormax+colormin)/2;
+	colormiddle = (colormax+colormin)/2;
       }
      
     }
@@ -106,9 +106,9 @@ TASK (ButtonPressTask){
 
 TASK (MoveStraightTask){
   
-  int kp=10;
+  int adjustnum=8;
   int color = ecrobot_get_light_sensor(NXT_PORT_S1);
-  right_speed = kp*(color-offset)+30;
+  right_speed = adjustnum*(color-colormiddle)+50;
   left_speed = -right_speed;
   if(right_speed > speedmax) right_speed = speedmax;
   if(right_speed < speedmin) right_speed = speedmin;
